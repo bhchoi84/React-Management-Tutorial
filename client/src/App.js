@@ -21,35 +21,27 @@ const styles = theme => ({
   }
 });
 
-const customers = [
-{
-  'id': 1,
-  'image':'https://placeimg.com/64/64/1',
-  'name': '나일번',
-  'birthday': '19840316',
-  'gender': '남자',
-  'job': '대학생'
-},
-{
-  'id': 2,
-  'image':'https://placeimg.com/64/64/2',
-  'name': '나이번',
-  'birthday': '19830316',
-  'gender': '여자',
-  'job': '직딩'
-},
-{
-  'id': 3,
-  'image':'https://placeimg.com/64/64/3',
-  'name': '나삼번',
-  'birthday': '19820316',
-  'gender': '남자',
-  'job': '고시생'
-}
-]
+
 
 class App extends Component {
-  
+
+  state = {
+    customers: ""
+  }
+
+  // 모든 컴포턴트가 마운트 되었을때
+  componentDidMount(){
+    this.callApi()
+      .then(res => this.setState({customers: res}))
+      .catch(err => console.log(err));
+  }
+
+  callApi = async() => {
+    const response = await fetch('/api/customers');
+    const body = await response.json();
+    return body;
+  }
+
   render(){
     const { classes } = this.props;
     return (
@@ -57,29 +49,30 @@ class App extends Component {
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
-            <TableCell>번호</TableCell>
-            <TableCell>이미지</TableCell>
-            <TableCell>제목</TableCell>
-            <TableCell>생년월일</TableCell>
-            <TableCell>성별</TableCell>
-            <TableCell>직업</TableCell>
+              <TableCell>번호</TableCell>
+              <TableCell>이미지</TableCell>
+              <TableCell>제목</TableCell>
+              <TableCell>생년월일</TableCell>
+              <TableCell>성별</TableCell>
+              <TableCell>직업</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
               {  
-                customers.map(c => {
+                this.state.customers ? this.state.customers.map(c => {
                   return (
                           <Customer
-                          key={c.id}
-                          id={c.id}
-                          image={c.image}
-                          name={c.name}
-                          birthday={c.birthday}
-                          gender={c.gender}
-                          job={c.job}
-                        />
+                            key={c.id}
+                            id={c.id}
+                            image={c.image}
+                            name={c.name}
+                            birthday={c.birthday}
+                            gender={c.gender}
+                            job={c.job}
+                          />
                   )
                 })
+                : ""
               }
           </TableBody>
         </Table>
